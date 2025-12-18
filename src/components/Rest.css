@@ -1,0 +1,20 @@
+.res-card{
+    width: 200px;
+    height: 320px;
+   
+    background-color: #f0f0f0;
+    padding: 2px;
+}
+
+.res-card:hover{
+     border: 1px solid black;
+     cursor: pointer;
+}
+
+.res-card img{
+    width: 100%;
+}
+
+.search{
+    padding: 10px;
+}
