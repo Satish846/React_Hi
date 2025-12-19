@@ -1,20 +1,45 @@
-.res-card{
+.card{
     width: 200px;
-    height: 320px;
+    height: 370px;
    
     background-color: #f0f0f0;
-    padding: 2px;
+    padding: 12px;
+    margin: 10px;
 }
 
-.res-card:hover{
+.card:hover{
      border: 1px solid black;
      cursor: pointer;
 }
 
-.res-card img{
-    width: 100%;
+.card img{
+    width: 150px;
+    height: 100px;
+    margin-left: 22px;
 }
 
-.search{
+.filter{
     padding: 10px;
+    cursor: pointer;
+}
+
+.res-conatiner{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+/* Shimmer */
+.shimmer-container{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.shimmer-cards{
+    width: 200px;
+    height: 400px;
+    background-color: #f0f0f0;
+    margin: 20px;
 }
