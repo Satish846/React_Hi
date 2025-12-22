@@ -1,64 +1,74 @@
 import React, { useEffect, useState } from "react";
 import RestaurantCard from "./RestaurantCard";
-import "./Rest.css";
+// import "./Rest.css";
 import Shimmer from "./Shimmer";
+import useRestaurantData from "../utils/useRestaurantData";
+import useOnline from "../utils/useOnline";
 
 const Body = () => {
-  const [allRestaurants, setAllRestaurants] = useState([]);
+  const { restaurants, loading } = useRestaurantData();
+
   const [listOfRestuarants, setListOfRestuarants] = useState([]);
+  const [filteredRestaurants, setFilteredRestaurants] = useState([]);
+  const [search, setSearch] = useState("");
 
+  // when data comes from hook, set local states
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    const data = await fetch(
-      "https://www.swiggy.com/dapi/restaurants/list/v5?lat=17.52843&lng=78.262702&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
-    );
-    const json = await data.json();
-
-    const restaurants =
-      json?.data?.cards
-        ?.map((c) => c.card?.card)
-        ?.find((c) => c?.gridElements?.infoWithStyle?.restaurants)?.gridElements
-        ?.infoWithStyle?.restaurants || [];
-
-        console.log(json)
-    console.log("Restaurants:", restaurants);
     setListOfRestuarants(restaurants);
-    setAllRestaurants(restaurants)
-  };
+    setFilteredRestaurants(restaurants);
+  }, [restaurants]);
 
-  if(listOfRestuarants.length===0){
-    return <Shimmer/>
+  // online check - custom Hook
+  const isOnline = useOnline();
+
+  if (!isOnline) {
+    return <h1>🔴 You are offline! Please check your internet connection.</h1>;
   }
 
-  
+  if (loading) return <Shimmer />;
 
   return (
     <div className="body">
-      <div className="filter">
-        <button
-          className="btn"
-          onClick={() => {
-            console.log("Before filter:", listOfRestuarants.length);
-
-            const updatedList = allRestaurants.filter((res) => {
-              const rating = parseFloat(res.info.avgRatingString);
-              return !isNaN(rating) && rating > 4.2;
-            });
-
-            console.log("After filter:", updatedList.length);
-            setListOfRestuarants(updatedList);
-          }}
-        >
-          Top Rated Restaurants
-        </button>
+      <div className="flex items-center justify-between"> 
+        <div className="search m-2 p-3 ">
+          <input
+            type="text"
+            className="border border-solid border-2 border-black p-2 rounded-md"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <button
+            className="px-4 py-2 m-4 bg-green-300 rounded-md hover:bg-green-500"
+            onClick={() => {
+              const filteredData = listOfRestuarants.filter((res) =>
+                res.info.name.toLowerCase().includes(search.toLowerCase())
+              );
+              setFilteredRestaurants(filteredData);
+            }}
+          >
+            Search
+          </button>
+        </div>
+        <div className="m-4 p-2">
+          <button
+            className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-500"
+            onClick={() => {
+              const updatedList = listOfRestuarants.filter((res) => {
+                const rating = parseFloat(res.info.avgRatingString);
+                return !isNaN(rating) && rating > 4.2;
+              });
+              setFilteredRestaurants(updatedList);
+            }}
+          >
+            Top Rated Restaurants
+          </button>
+        </div>
       </div>
-      <div className="res-conatiner">
-        {listOfRestuarants.map((resta) => {
-          return <RestaurantCard key={resta?.info?.id} {...resta?.info} />;
-        })}
+
+      <div className="restaurant-list flex flex-wrap justify-center">
+        {filteredRestaurants.map((resta) => (
+          <RestaurantCard key={resta?.info?.id} {...resta?.info} />
+        ))}
       </div>
     </div>
   );

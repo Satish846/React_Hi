@@ -11,14 +11,14 @@ const RestaurantCard = ({
   avgRatingString,
 }) => {
   return (
-    <div className="card">
-      <img
+    <div className="m-4 p-4 w-72 bg-gray-100 rounded-lg hover:shadow-lg hover:bg-gray-200">
+      <img className="rounded-lg "
         src={
           "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_660/" +
           cloudinaryImageId
         }
       />
-      <h3>{name}</h3>
+      <h3 className="font-bold py-2 text-xl">{name}</h3>
       <h5>{cuisines.join(", ")}</h5>
       <h5>{areaName}</h5>
       <span>

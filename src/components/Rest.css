@@ -1,10 +1,11 @@
-.card{
+/* .card{
     width: 200px;
     height: 370px;
    
     background-color: #f0f0f0;
     padding: 12px;
     margin: 10px;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .card:hover{
@@ -19,8 +20,19 @@
 }
 
 .filter{
+    display: flex;
     padding: 10px;
     cursor: pointer;
+    justify-content: space-between;
+}
+
+.search-btn{
+    margin-left: 20px;
+    padding: 10px;
+}
+
+.search-box{
+    padding: 10px;
 }
 
 .res-conatiner{
@@ -42,4 +54,4 @@
     height: 400px;
     background-color: #f0f0f0;
     margin: 20px;
-}
+} 

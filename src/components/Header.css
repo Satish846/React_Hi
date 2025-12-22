@@ -15,3 +15,14 @@
   margin: 10px;
   list-style: none;
 }
+
+.login{
+  padding: 0 20px;
+  cursor: pointer;
+}
+
+.navbar{
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
+}
