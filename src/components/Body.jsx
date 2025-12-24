@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import RestaurantCard from "./RestaurantCard";
+import RestaurantCard, { withOpenTag } from "./RestaurantCard";
 // import "./Rest.css";
 import Shimmer from "./Shimmer";
 import useRestaurantData from "../utils/useRestaurantData";
 import useOnline from "../utils/useOnline";
+import { Link } from "react-router-dom";
 
 const Body = () => {
   const { restaurants, loading } = useRestaurantData();
@@ -11,6 +12,8 @@ const Body = () => {
   const [listOfRestuarants, setListOfRestuarants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [search, setSearch] = useState("");
+
+  const RestaurantCardWithOpenTag = withOpenTag(RestaurantCard);
 
   // when data comes from hook, set local states
   useEffect(() => {
@@ -29,7 +32,7 @@ const Body = () => {
 
   return (
     <div className="body">
-      <div className="flex items-center justify-between"> 
+      <div className="flex items-center justify-between">
         <div className="search m-2 p-3 ">
           <input
             type="text"
@@ -66,9 +69,13 @@ const Body = () => {
       </div>
 
       <div className="restaurant-list flex flex-wrap justify-center">
-        {filteredRestaurants.map((resta) => (
-          <RestaurantCard key={resta?.info?.id} {...resta?.info} />
-        ))}
+        {filteredRestaurants.map((resta) =>
+          resta?.info?.isOpen ? (
+            <Link to={`/restamenu/${resta?.info?.id}`}><RestaurantCardWithOpenTag key={resta?.info?.id} {...resta?.info} /></Link>
+          ) : (
+          <Link to={`/restamenu/${resta?.info?.id}`}><RestaurantCard key={resta?.info?.id} {...resta?.info} /></Link>
+          )
+        )}
       </div>
     </div>
   );

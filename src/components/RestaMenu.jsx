@@ -1,41 +1,89 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 // import "./Menu.css"
-import { useParams } from "react-router-dom"
-const RestaMenu = () =>{
+import { useParams } from "react-router-dom";
+import Shimmer from "./Shimmer";
+import RestCategory from "./RestCategory";
+const RestaMenu = () => {
+  const [menu, setMenu] = useState(null);
+  // const [isOpen, setIsOpen] = useState(false);
+  //lift state up
+  //below state in accordion state
+  const [showIndex, setShowIndex] = useState(null);
 
-  const [menu,setMenu] = useState(null)
+  const { id } = useParams();
+  console.log(id);
 
-  const id = useParams()
-  console.log(id)
+  useEffect(() => {
+    if (id) fetchMenu();
+  }, [id]);
 
-  useEffect(()=>{
-    fetchMenu()
-  },[])
-
-  const fetchMenu = async()=>{
-    const data = await fetch("https://corsproxy.io/https://www.swiggy.com/dapi/restaurants/list/v5?lat=17.52843&lng=78.262702&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"+id)
-    const json = await data.json()
-    // console.log(json)
-    console.log(json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants)
-    let dat = json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
-    setMenu(dat[0])
+  const fetchMenu = async () => {
+    const data = await fetch(
+      `https://corsproxy.io/https://foodfire.onrender.com/api/menu?page-type=REGULAR_MENU&complete-menu=true&lat=21.1702401&lng=72.83106070000001&submitAction=ENTER&restaurantId=${id}`
+    );
+    const json = await data.json();
+    // console.log(json);
+    setMenu(json?.data);
+  };
+  if (menu === null) {
+    return <Shimmer />;
   }
 
-  return(
-    <div className="menu-card">
-      <img  src={"https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_660/" + menu?.info?.cloudinaryImageId}/>
-          
-      <h1>{menu?.info?.name}</h1>
-      
-      <h3>{menu?.info?.cuisines?.join(", ")}</h3>
-      <h3>Cost for two: {menu?.info?.costForTwo}</h3>
-       <h4>{menu?.info?.avgRating}</h4>
-       <h3>Total Rating :{menu?.info?.totalRatingsString}</h3>
-       <h5>{menu?.info?.sla?.deliveryTime} min</h5>
-       <h3>{menu?.info?.locality} </h3>
-     
-    </div>
-  )
-}
+  const { name, cuisines, costForTwoMessage } =
+    menu?.cards?.map((c) => c.card?.card)?.find((c) => c?.info)?.info || {};
 
-export default RestaMenu
+  const regularCards = menu?.cards?.find((c) => c.groupedCard)?.groupedCard
+    ?.cardGroupMap?.REGULAR?.cards;
+
+  // console.log("cards",regularCards);
+
+  const itemCards =
+    regularCards?.map((c) => c.card?.card)?.find((c) => c?.itemCards)
+      ?.itemCards || [];
+
+  // console.log(itemCards);
+
+  const categoeries =
+    menu?.cards
+      ?.find((c) => c.groupedCard)
+      ?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
+        (c) =>
+          c.card?.card?.["@type"] ===
+          "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
+      ) || [];
+
+  console.log("categories", categoeries);
+  return (
+    <div className="text-center ">
+      <h1 className="font-bold my-5 font-bold text-2xl">{name}</h1>
+      <p className=" text-lg">
+        {cuisines?.join(", ")}-{costForTwoMessage}
+      </p>
+
+      {/* <h1 className="font-bold m-2">Menu</h1> */}
+      {/* <ul>
+        {itemCards.map((item) => (
+          <li className="m-2" key={item.card.info.id}>
+            {item.card.info.name} - Rs.
+            {(item.card.info.price || item.card.info.defaultPrice) / 100}
+          </li>
+        ))}
+      </ul> */}
+      {categoeries.map((cate,index) => {
+        return (
+          //controlled component
+          <RestCategory
+            key={cate.card?.card?.title}
+            title={cate.card?.card?.title}
+            items={cate.card?.card?.itemCards}
+            isOpen={index === showIndex ?true:false}
+            // setIsOpen={setIsOpen}
+            setShowIndex={() => setShowIndex(index)}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
+export default RestaMenu;
