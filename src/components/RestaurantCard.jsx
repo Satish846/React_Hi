@@ -1,5 +1,8 @@
 // import { IMG_CDN_URL } from "../../../public/Common/constants";
 
+import { useContext } from "react";
+import UserContext from "../utils/UserContext";
+
 // Restaurant card component: Image, name, cuisine
 const RestaurantCard = ({
   cloudinaryImageId,
@@ -10,9 +13,11 @@ const RestaurantCard = ({
   costForTwo,
   avgRatingString,
 }) => {
+  const {loggedInUser} = useContext(UserContext)
   return (
     <div className="m-4 p-4 w-72 bg-gray-100 rounded-lg hover:shadow-lg hover:bg-gray-200">
-      <img className="rounded-lg "
+      <img
+        className="rounded-lg "
         src={
           "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_660/" +
           cloudinaryImageId
@@ -38,21 +43,24 @@ const RestaurantCard = ({
         <h4>{sla?.lastMileTravelString ?? "2.0 km"}</h4>
 
         <h4 className="offer">{costForTwo ?? "₹200 for two"}</h4>
+        <h4>User : {loggedInUser}</h4>
       </span>
     </div>
   );
 };
 
 //Higher order component - RestaurantCard
- export const withOpenTag = (RestaurantCard)=>{
-  return(props)=>{
-    return(
+export const withOpenTag = (RestaurantCard) => {
+  return (props) => {
+    return (
       <div>
-        <label className="absolute bg-black text-white p-1 rounded-lg m-4">OPEN</label>
-        <RestaurantCard {...props}/>
+        <label className="absolute bg-black text-white p-1 rounded-lg m-4">
+          OPEN
+        </label>
+        <RestaurantCard {...props} />
       </div>
-    )
-  }
-}
+    );
+  };
+};
 
 export default RestaurantCard;

@@ -78,7 +78,8 @@ const RestaMenu = () => {
             items={cate.card?.card?.itemCards}
             isOpen={index === showIndex ?true:false}
             // setIsOpen={setIsOpen}
-            setShowIndex={() => setShowIndex(index)}
+            setShowIndex={() => setShowIndex((prev)=>prev===index?null:index)}
+            showIndex={showIndex}
           />
         );
       })}

@@ -1,13 +1,22 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useContext, useState } from "react";
 // import "./Header.css";
 import { LOGO_URL } from "../utils/constant";
 import { NavLink } from "react-router-dom";
 import useOnline from "../utils/useOnline";
+import UserContext from "../utils/UserContext";
+import { useSelector } from "react-redux";
+import store from "../utils/store";
 
 const Header = () => {
   const [login, setLogin] = useState(false);
 
+  const {loggedInUse} = useContext(UserContext);
+  console.log(loggedInUse);
+
   const onlineStatus = useOnline();
+
+  //selector
+  const cartItems =useSelector((store)=> store.cart.items)
 
   return (
     <div className="flex justify-between align-center bg-yellow-100 shadow-lg mb-4 px-2 sm:bg-green-500 lg:bg-red-500">
@@ -31,13 +40,17 @@ const Header = () => {
             <NavLink to="/grocery">Grocery</NavLink>
           </Suspense>
           </li>
-          <li className="text-white font-bold text-xl">
-            <NavLink>Cart</NavLink>
+          <li className="text-black font-bold text-xl">
+            <NavLink to="/cart">Cart - {cartItems.length} Items</NavLink>
+          </li>
+          <li className="text-black font-bold text-xl">
+            <NavLink>{loggedInUse}</NavLink>
           </li>
           
           <button className="text-yellow-400 font-bold text-xl" onClick={() => setLogin(!login)}>
             {login === true ? "Logout" : "Login"}
           </button>
+         
         </ul>
       </div>
     </div>

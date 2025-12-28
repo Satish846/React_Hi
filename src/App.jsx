@@ -7,6 +7,7 @@ import Contact from "./components/Contact";
 import Errorr from "./components/Errorr";
 import Body from "./components/Body";
 import RestaMenu from "./components/RestaMenu";
+import Cart from "./components/Cart";
 // import Grocery from "./components/Grocery";
 
 //All these are same term used for same purpose
@@ -24,6 +25,7 @@ const About=lazy(()=>import("./components/About"));
 //When we have large application with many routes and components lazy loading is very useful
 
 const App = () => {
+  const [userName, setUserName] = React.useState("");
   return (
     <div>
       <RouterProvider router={appRouter} />
@@ -51,6 +53,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/grocery",
         element: <Grocery />,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
       },
       {
         path: "/restamenu/:id",
