@@ -11,7 +11,7 @@ const Header = () => {
   const [login, setLogin] = useState(false);
 
   const {loggedInUse} = useContext(UserContext);
-  console.log(loggedInUse);
+  // console.log(loggedInUse);
 
   const onlineStatus = useOnline();
 
